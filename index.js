@@ -13,6 +13,11 @@ const __dirname = path.dirname(__filename);
 // using handlebars as a templeting engine instead of Jade
 // initialization of express instance
 const app = express();
+app.use(function(req,res,next){
+    res.locals.showTests = app.get('env')!=='production' &&
+    req.query.test==='1';
+    next();
+})
 // handlebars.create({defaultLayout:'index'})
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
@@ -35,7 +40,10 @@ app.get('/',function(req,res){
 app.get('/about',function(req,res){
     // res.type('text/plain')
     // res.send("About Meadwlark Travel")
-    res.render('about',{fortune:getFortune()})
+    res.render('about',{
+        fortune:getFortune(),
+        pageTestScript:'/qa/tests-about.js'
+    })
 })
 
 // custom 404 page
